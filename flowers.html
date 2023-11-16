@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Press me for a mesmerizing surprise >:D</title>
+  <style>
+    body {
+      overflow: hidden;
+      margin: 0;
+      background-color: #222;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      font-family: 'Arial', sans-serif;
+      color: white;
+      cursor: pointer;
+    }
+
+    #message {
+      display: none;
+      text-align: center;
+      font-size: 24px;
+      margin-top: 20px;
+    }
+
+    .flower {
+      position: absolute;
+      border-radius: 50%;
+      transform-origin: center bottom;
+      animation: bloom 2s ease-out, spin 4s linear infinite;
+    }
+
+    @keyframes bloom {
+      0% {
+        transform: translateY(0) scale(0);
+        opacity: 0;
+      }
+      50% {
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(-100px) scale(1);
+        opacity: 0.5;
+      }
+    }
+
+    @keyframes spin {
+      0% {
+        transform: rotate(0deg);
+      }
+      100% {
+        transform: rotate(360deg);
+      }
+    }
+
+    .big-flower {
+      position: absolute;
+      border-radius: 50%;
+      animation: bigBloom 2s ease-out, spin 4s linear infinite;
+    }
+
+    @keyframes bigBloom {
+      0% {
+        transform: scale(0);
+        opacity: 0;
+      }
+      100% {
+        transform: scale(3);
+        opacity: 0.7;
+      }
+    }
+
+    #particles {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+    }
+
+    .particle {
+      position: absolute;
+      background-color: #fff;
+      border-radius: 50%;
+      pointer-events: none;
+      animation: particleBurst 1s linear forwards;
+    }
+
+    @keyframes particleBurst {
+      0% {
+        transform: scale(0);
+        opacity: 1;
+      }
+      100% {
+        transform: scale(2);
+        opacity: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+  <audio id="backgroundMusic" loop>
+    <!-- Replace YOUR_YOUTUBE_LINK with the actual YouTube link to your desired song -->
+    <source src="https://www.youtube.com/watch?v=R-NeDsIHTYU" type="audio/mp3">
+    Your browser does not support the audio element.
+  </audio>
+
+  <div id="message">Press me again</div>
+  <div id="particles"></div>
+
+  <script>
+    // Replace YOUR_YOUTUBE_LINK with the actual YouTube link to your desired song
+    const backgroundMusicLink = 'https://www.youtube.com/watch?v=R-NeDsIHTYU';
+    const audioElement = document.getElementById('backgroundMusic');
+    audioElement.src = backgroundMusicLink;
+
+    let clickCount = 0;
+
+    function createFlower() {
+      const flower = document.createElement('div');
+      flower.className = 'flower';
+      document.body.appendChild(flower);
+
+      const colors = ['#c6e48b', '#f7d794', '#778beb', '#63cdda'];
+      const randomColor = colors[Math.floor(Math.random() * colors.length)];
+      flower.style.backgroundColor = randomColor;
+
+      const size = Math.random() * 50 + 10;
+      flower.style.width = size + 'px';
+      flower.style.height = size + 'px';
+
+      const x = Math.random() * window.innerWidth;
+      const y = Math.random() * window.innerHeight;
+      flower.style.transform = `translate(${x}px, ${y}px)`;
+    }
+
+    function createBigFlower() {
+      const bigFlower = document.createElement('div');
+      bigFlower.className = 'big-flower';
+      document.body.appendChild(bigFlower);
+
+      bigFlower.style.backgroundColor = '#ffffff';
+    }
+
+    function createParticle(x, y) {
+      const particle = document.createElement('div');
+      particle.className = 'particle';
+      document.getElementById('particles').appendChild(particle);
+
+      particle.style.width = '4px';
+      particle.style.height = '4px';
+      particle.style.background = '#fff';
+
+      particle.style.left = x + 'px';
+      particle.style.top = y + 'px';
+    }
+
+    function handleButtonClick() {
+      clickCount++;
+
+      // Start playing the background music on the first click with smooth fade-in
+      if (clickCount === 1) {
+        audioElement.volume = 0;
+        audioElement.play();
+        fadeIn(audioElement);
+      }
+
+      if (clickCount <= 3) {
+        createFlower();
+        createParticle(Math.random() * window.innerWidth, Math.random() * window.innerHeight);
+      } else {
+        createBigFlower();
+        clickCount = 0; // Reset click count
+        setTimeout(() => {
+          document.getElementById('message').style.display = 'block';
+        }, 2000);
+
+        setTimeout(() => {
+          alert('GOOD LUCK WITH YOUR STUDIES NOAH!!');
+          // Stop the background music with a smooth fade-out
+          fadeOut(audioElement);
+          window.close(); // Close the window/tab
+        }, 4000);
+      }
+    }
+
+    function fadeIn(element) {
+      let opacity = 0;
+      const fadeInInterval = setInterval(() => {
+        if (opacity < 1) {
+          opacity += 0.1;
+          element.volume = opacity;
+        } else {
+          clearInterval(fadeInInterval);
+        }
+      }, 200);
+    }
+
+    function fadeOut(element) {
+      let opacity = 1;
+      const fadeOutInterval = setInterval(() => {
+        if (opacity > 0) {
+          opacity -= 0.1;
+          element.volume = opacity;
+        } else {
+          clearInterval(fadeOutInterval);
+          element.pause();
+          element.currentTime = 0;
+        }
+      }, 200);
+    }
+
+    document.body.addEventListener('click', handleButtonClick);
+  </script>
+</body>
+</html>
